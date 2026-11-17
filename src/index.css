@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #ffffff;
+  }
+}
+
+/* Luminous, clean, bright white background with subtle web-bg texture */
+.site-background {
+  background-color: #ffffff;
+  background-image: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.93) 0%, rgba(247, 250, 254, 0.95) 40%, rgba(255, 255, 255, 0.97) 100%),
+    url('/assets/web-bg.jpeg');
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Pristine White Card styling */
+.card-clean {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px -2px rgba(9, 44, 80, 0.05);
+}
+
+.card-clean-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-clean-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -4px rgba(9, 44, 80, 0.1);
+  border-color: rgba(8, 116, 201, 0.4);
+}
+
+/* Pulse animation for SOS beacon */
+@keyframes sos-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(229, 57, 53, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0);
+  }
+}
+
+.animate-sos-pulse {
+  animation: sos-pulse 2s infinite;
+}
