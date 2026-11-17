@@ -131,7 +131,7 @@ export default function FeaturesSection() {
       </div>
 
       {/* ACTIVE FEATURE SPOTLIGHT CARD */}
-      <div className="card-clean rounded-3xl p-8 sm:p-12 border border-surface-border shadow-clean-lg grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="card-clean rounded-3xl p-5 sm:p-8 lg:p-12 border border-surface-border shadow-clean-lg grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         
         {/* TEXT DETAILS */}
         <div className="lg:col-span-7 flex flex-col items-start">

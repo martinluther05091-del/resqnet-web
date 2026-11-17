@@ -43,7 +43,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen site-background relative text-resqtext-primary">
+    <div className="min-h-screen site-background relative text-resqtext-primary overflow-x-hidden w-full max-w-[100vw]">
       {/* Luminous clean white overlay to ensure perfect contrast and readability */}
       <div className="absolute inset-0 bg-white/80 pointer-events-none -z-10" />
 

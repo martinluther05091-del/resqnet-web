@@ -53,7 +53,9 @@ export default function Simulation3D({
     sceneRef.current = scene;
 
     // CAMERA - Grounded perspective aligned directly with the disaster road
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    const aspect = width / height;
+    const fov = aspect < 1.2 ? 56 : 40;
+    const camera = new THREE.PerspectiveCamera(fov, aspect, 0.1, 1000);
     camera.position.set(0, 2.2, 25);
     camera.lookAt(0, -0.4, 0);
     cameraRef.current = camera;
@@ -210,7 +212,9 @@ export default function Simulation3D({
       if (!container || !renderer || !camera) return;
       const w = container.clientWidth;
       const h = container.clientHeight || 480;
-      camera.aspect = w / h;
+      const asp = w / h;
+      camera.aspect = asp;
+      camera.fov = asp < 1.2 ? 56 : 40;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
@@ -233,16 +237,43 @@ export default function Simulation3D({
       isDragging.current = false;
     };
 
+    // Touch handlers for mobile
+    const onTouchStart = (e) => {
+      if (e.touches.length === 1) {
+        isDragging.current = true;
+        userInteracted.current = true;
+        prevMousePos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    };
+    const onTouchMove = (e) => {
+      if (!isDragging.current || e.touches.length !== 1) return;
+      const dx = e.touches[0].clientX - prevMousePos.current.x;
+      const dy = e.touches[0].clientY - prevMousePos.current.y;
+      cameraAngle.current.theta -= dx * 0.006;
+      cameraAngle.current.phi = Math.max(0.05, Math.min(1.1, cameraAngle.current.phi + dy * 0.006));
+      prevMousePos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    };
+    const onTouchEnd = () => {
+      isDragging.current = false;
+    };
+
     const domEl = renderer.domElement;
     domEl.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
+
+    domEl.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('touchend', onTouchEnd);
 
     return () => {
       window.removeEventListener('resize', handleResize);
       domEl.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+      domEl.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
       cancelAnimationFrame(animFrameId.current);
       renderer.dispose();
     };
@@ -903,7 +934,7 @@ export default function Simulation3D({
   }
 
   return (
-    <div className="relative w-full h-[420px] md:h-[480px] rounded-3xl overflow-hidden shadow-clean-lg border border-surface-border bg-slate-900">
+    <div className="relative w-full h-[320px] xs:h-[370px] sm:h-[420px] md:h-[480px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-clean-lg border border-surface-border bg-slate-900 touch-pan-y">
       {/* 2D Disaster Background: Storm-Ravaged Flooded Ruins */}
       <img
         src="/assets/storm-ravaged-flooded-ruins.png"
@@ -917,33 +948,36 @@ export default function Simulation3D({
       {/* 3D WebGL Canvas */}
       <div ref={containerRef} className="relative w-full h-full cursor-grab active:cursor-grabbing z-10" />
 
-      {/* Dynamic Status Badges in Light Theme */}
-      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-sm border border-slate-200 text-xs text-navy font-bold flex items-center space-x-2.5 pointer-events-none select-none z-20">
-        <span className={`w-2.5 h-2.5 rounded-full ${
-          currentTime >= 20 ? 'bg-emerald-500 animate-bounce' : 'bg-resqblue animate-pulse'
-        }`}></span>
-        <span>
-          {currentTime < 4
-            ? '⚠️ Catastrophic Outage • Survivor Cut Off'
-            : currentTime < 14
-            ? '📡 LoRa Sub-GHz Mesh In-Flight'
-            : currentTime < 16
-            ? '💻 Command Console Received SOS Alert'
-            : currentTime < 20
-            ? '🚁 Rescue Squad Alpha Dispatched En Route'
-            : '🎉 SURVIVOR SAVED • MISSION ACCOMPLISHED!'}
-        </span>
-      </div>
+      {/* Responsive Dynamic Status Badges in Light Theme */}
+      <div className="absolute top-2.5 sm:top-4 inset-x-2.5 sm:inset-x-4 flex items-center justify-between gap-2 pointer-events-none select-none z-20">
+        <div className="bg-white/90 backdrop-blur-md px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 text-[10px] sm:text-xs text-navy font-bold flex items-center space-x-1.5 sm:space-x-2.5 truncate max-w-[70%] sm:max-w-none">
+          <span className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full flex-shrink-0 ${
+            currentTime >= 20 ? 'bg-emerald-500 animate-bounce' : 'bg-resqblue animate-pulse'
+          }`}></span>
+          <span className="truncate">
+            {currentTime < 4
+              ? '⚠️ Catastrophic Outage • Cut Off'
+              : currentTime < 14
+              ? '📡 LoRa Sub-GHz Mesh In-Flight'
+              : currentTime < 16
+              ? '💻 Command Console Received SOS'
+              : currentTime < 20
+              ? '🚁 Rescue Squad En Route'
+              : '🎉 SURVIVOR SAVED!'}
+          </span>
+        </div>
 
-      {/* Disaster Zone Badge */}
-      <div className="absolute top-4 right-4 bg-white/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 text-[11px] font-bold text-navy flex items-center space-x-1.5 pointer-events-none select-none shadow-sm z-20">
-        <span className="w-2 h-2 rounded-full bg-emergency animate-pulse"></span>
-        <span>Disaster Zone: Storm-Ravaged Flooded Ruins</span>
+        {/* Disaster Zone Badge */}
+        <div className="bg-white/85 backdrop-blur-md px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl border border-slate-200 text-[9px] sm:text-[11px] font-bold text-navy flex items-center space-x-1 sm:space-x-1.5 shadow-sm flex-shrink-0">
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emergency animate-pulse flex-shrink-0"></span>
+          <span className="hidden xs:inline">Disaster Zone: Flooded Ruins</span>
+          <span className="xs:hidden">Disaster Zone</span>
+        </div>
       </div>
 
       {/* Floating 3D Hint */}
-      <div className="absolute bottom-4 right-4 bg-white/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 text-[11px] text-resqtext-secondary flex items-center space-x-1.5 pointer-events-none select-none shadow-sm z-20">
-        <svg className="w-3.5 h-3.5 text-resqblue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <div className="absolute bottom-2.5 sm:bottom-4 right-2.5 sm:right-4 bg-white/85 backdrop-blur-md px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl border border-slate-200 text-[10px] sm:text-[11px] text-resqtext-secondary flex items-center space-x-1.5 pointer-events-none select-none shadow-sm z-20">
+        <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-resqblue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="10" strokeDasharray="30" strokeLinecap="round" />
         </svg>
         <span>Drag to inspect 3D view</span>

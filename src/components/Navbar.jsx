@@ -47,10 +47,10 @@ export default function Navbar({ activeSection, setActiveSection }) {
           <a 
             href="#home" 
             onClick={(e) => { e.preventDefault(); handleNavClick('home'); }}
-            className="flex items-center space-x-3 group"
+            className="flex items-center space-x-2.5 sm:space-x-3 group"
           >
             {/* Logo Image */}
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-navy/10 flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-sm border border-navy/10 flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
               <img 
                 src="/assets/logo.jpeg" 
                 alt="ResQNet Logo" 
@@ -60,12 +60,12 @@ export default function Navbar({ activeSection, setActiveSection }) {
             
             {/* Brand Text */}
             <div className="flex flex-col">
-              <div className="flex items-center tracking-tight text-2xl font-black italic text-navy leading-none">
+              <div className="flex items-center tracking-tight text-xl sm:text-2xl font-black italic text-navy leading-none">
                 <span>Res</span>
                 <span className="text-emergency">Q</span>
                 <span>Net</span>
               </div>
-              <span className="text-[9px] uppercase tracking-wider font-bold text-resqtext-secondary mt-0.5">
+              <span className="text-[8px] sm:text-[9px] uppercase tracking-wider font-bold text-resqtext-secondary mt-0.5">
                 Disaster Response Network
               </span>
             </div>

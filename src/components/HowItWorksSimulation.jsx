@@ -159,32 +159,32 @@ export default function HowItWorksSimulation() {
             </div>
 
             {/* VIDEO PLAYER BUTTON BAR */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
               
-              {/* Play / Rewind / FastForward */}
-              <div className="flex items-center space-x-2">
+              {/* Row 1 / Primary Controls: Play / Rewind / FastForward / Replay */}
+              <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:space-x-2">
                 <button
                   onClick={() => setIsPlaying(!isPlaying)}
-                  className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-resqblue hover:bg-resqblue-hover text-white font-bold text-xs shadow-md shadow-resqblue/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                  className="flex-1 sm:flex-initial flex items-center justify-center space-x-1.5 sm:space-x-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-resqblue hover:bg-resqblue-hover text-white font-bold text-xs shadow-md shadow-resqblue/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                 >
-                  {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current" />}
-                  <span>{isPlaying ? 'Pause' : 'Play Video'}</span>
+                  {isPlaying ? <Pause className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" /> : <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />}
+                  <span>{isPlaying ? 'Pause' : 'Play'}</span>
                 </button>
 
                 <button
                   onClick={handleRewind}
-                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-navy transition"
+                  className="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-navy transition"
                   title="Rewind 5 seconds"
                 >
-                  <Rewind className="w-4 h-4" />
+                  <Rewind className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
 
                 <button
                   onClick={handleForward}
-                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-navy transition"
+                  className="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-navy transition"
                   title="Forward 5 seconds"
                 >
-                  <FastForward className="w-4 h-4" />
+                  <FastForward className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
 
                 <button
@@ -192,28 +192,36 @@ export default function HowItWorksSimulation() {
                     setCurrentTime(0.0);
                     setIsPlaying(true);
                   }}
-                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-navy transition"
+                  className="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-navy transition"
                   title="Replay from start"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
+
+                {/* Mobile timecode placement inside row 1 for compactness */}
+                <div className="sm:hidden flex items-center space-x-1 text-xs font-mono font-bold text-navy bg-slate-100 px-2.5 py-1.5 rounded-xl flex-shrink-0">
+                  <span className="text-resqblue">{formatTime(currentTime)}</span>
+                  <span className="text-slate-400">/</span>
+                  <span>{formatTime(DURATION)}</span>
+                </div>
               </div>
 
-              {/* TIMECODE COUNTER */}
-              <div className="flex items-center space-x-2 text-xs font-mono font-bold text-navy bg-slate-100 px-3.5 py-2 rounded-xl">
-                <span className="text-resqblue">{formatTime(currentTime)}</span>
-                <span className="text-slate-400">/</span>
-                <span>{formatTime(DURATION)}</span>
-              </div>
+              {/* Row 2 on mobile: Desktop timecode + Speed chip & Telemetry */}
+              <div className="flex items-center justify-between sm:justify-end gap-2 sm:space-x-3">
+                {/* DESKTOP TIMECODE COUNTER */}
+                <div className="hidden sm:flex items-center space-x-2 text-xs font-mono font-bold text-navy bg-slate-100 px-3.5 py-2 rounded-xl flex-shrink-0">
+                  <span className="text-resqblue">{formatTime(currentTime)}</span>
+                  <span className="text-slate-400">/</span>
+                  <span>{formatTime(DURATION)}</span>
+                </div>
 
-              {/* SPEED CHIP & TELEMETRY TOGGLE */}
-              <div className="flex items-center space-x-3">
+                {/* SPEED CHIP */}
                 <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl text-xs">
                   {[0.75, 1.0, 1.5, 2.0].map((spd) => (
                     <button
                       key={spd}
                       onClick={() => setPlaybackSpeed(spd)}
-                      className={`px-2 py-1 rounded-lg text-[11px] font-bold transition ${
+                      className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition ${
                         playbackSpeed === spd ? 'bg-white shadow text-resqblue' : 'text-resqtext-secondary'
                       }`}
                     >
@@ -222,9 +230,10 @@ export default function HowItWorksSimulation() {
                   ))}
                 </div>
 
+                {/* TELEMETRY TOGGLE */}
                 <button
                   onClick={() => setShowTelemetry(!showTelemetry)}
-                  className={`text-xs px-3 py-1.5 rounded-xl border transition ${
+                  className={`text-xs px-2.5 sm:px-3 py-1.5 rounded-xl border transition flex-shrink-0 ${
                     showTelemetry 
                       ? 'border-resqblue/30 bg-resqblue-subtle text-resqblue font-bold' 
                       : 'border-slate-200 text-resqtext-secondary'
@@ -260,7 +269,7 @@ export default function HowItWorksSimulation() {
                 }`}>
                   {currentChapter.label}
                 </span>
-                <h3 className="text-xl font-extrabold text-navy tracking-tight">
+                <h3 className="text-base sm:text-xl font-extrabold text-navy tracking-tight">
                   {currentTime < 4.0
                     ? '1. Disaster Strikes: Catastrophic Blackout'
                     : currentTime < 8.0

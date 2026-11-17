@@ -43,9 +43,9 @@ export default function DownloadSection() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* LEFT: OFFICIAL APK CARD */}
-        <div className="lg:col-span-6 card-clean rounded-3xl p-8 sm:p-10 border border-surface-border shadow-clean-lg relative overflow-hidden">
+        <div className="lg:col-span-6 card-clean rounded-3xl p-5 sm:p-8 lg:p-10 border border-surface-border shadow-clean-lg relative overflow-hidden">
           
-          <div className="flex items-start space-x-5 mb-8">
+          <div className="flex flex-col xs:flex-row items-center xs:items-start text-center xs:text-left gap-4 xs:gap-5 mb-8">
             {/* App Icon */}
             <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border border-slate-200 flex-shrink-0">
               <img 
@@ -57,7 +57,7 @@ export default function DownloadSection() {
             
             {/* App Header */}
             <div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center justify-center xs:justify-start space-x-2">
                 <h3 className="text-2xl font-black text-navy tracking-tight">ResQNet</h3>
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-resqblue-subtle text-resqblue border border-resqblue/20">
                   Official APK
@@ -66,7 +66,7 @@ export default function DownloadSection() {
               <p className="text-xs text-resqtext-secondary mt-1">
                 Disaster Response & Mesh Communication Platform
               </p>
-              <div className="mt-2.5 flex items-center space-x-2 text-xs font-semibold text-emerald-600">
+              <div className="mt-2.5 flex items-center justify-center xs:justify-start space-x-2 text-xs font-semibold text-emerald-600">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Verified Release Build</span>
               </div>
@@ -142,7 +142,7 @@ export default function DownloadSection() {
         </div>
 
         {/* RIGHT: STEP-BY-STEP INSTALLATION GUIDE */}
-        <div className="lg:col-span-6 card-clean rounded-3xl p-8 sm:p-10 border border-surface-border">
+        <div className="lg:col-span-6 card-clean rounded-3xl p-5 sm:p-8 lg:p-10 border border-surface-border">
           <h3 className="text-xl font-bold text-navy mb-2">How to Install on Android</h3>
           <p className="text-sm text-resqtext-secondary mb-6">
             Since ResQNet is distributed as a direct APK for disaster response agility, follow these standard Android installation steps:
